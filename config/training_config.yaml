@@ -20,7 +20,6 @@ lora:
     - "gate_proj"
     - "up_proj"
     - "down_proj"
-  # Tip: Start with attention-only (q,k,v,o). Add FFN layers if capacity needed.
 
 # ------------------------------------------------------------
 # SFT Training Hyperparameters
@@ -28,24 +27,24 @@ lora:
 training:
   output_dir: "checkpoints/sft_run_001"
   num_train_epochs: 3
-  per_device_train_batch_size: 2     # Increase if GPU allows
+  per_device_train_batch_size: 2
   per_device_eval_batch_size: 2
-  gradient_accumulation_steps: 8    # Effective batch = 2 * 8 = 16
+  gradient_accumulation_steps: 4
   learning_rate: 2.0e-4
   weight_decay: 0.01
   warmup_ratio: 0.03
-  lr_scheduler_type: "cosine"       # cosine | linear | constant
-  max_seq_length: 2048
-  fp16: false                       # Set true for GPU with float16 support
-  bf16: false                       # Set true for A100/H100 or recent GPUs
-  logging_steps: 10
-  eval_steps: 100
-  save_steps: 200
-  save_total_limit: 3               # Keep only last 3 checkpoints
+  lr_scheduler_type: "cosine"
+  max_seq_length: 512
+  fp16: false
+  bf16: false
+  logging_steps: 5
+  eval_steps: 25
+  save_steps: 50
+  save_total_limit: 3
   load_best_model_at_end: true
   metric_for_best_model: "eval_loss"
-  report_to: "tensorboard"          # tensorboard | wandb | none
-  dataloader_num_workers: 0         # Set to 4 on Linux
+  report_to: "none"
+  dataloader_num_workers: 0
 
 # ------------------------------------------------------------
 # Dataset Configuration
@@ -53,8 +52,8 @@ training:
 dataset:
   train_file: "datasets/train.jsonl"
   eval_file: "datasets/eval.jsonl"
-  # Expected format: {"messages": [{"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}]}
   train_split_ratio: 0.95
+  dedup: true
   shuffle: true
   seed: 42
 
@@ -62,7 +61,7 @@ dataset:
 # Optimizer
 # ------------------------------------------------------------
 optimizer:
-  name: "adamw_torch"           # adamw_torch | adamw_8bit (requires bitsandbytes)
+  name: "adamw_torch"
   adam_beta1: 0.9
   adam_beta2: 0.999
   adam_epsilon: 1.0e-8
@@ -72,8 +71,8 @@ optimizer:
 # Quantization (for low-VRAM GPUs)
 # ------------------------------------------------------------
 quantization:
-  load_in_4bit: false           # Set true for QLoRA on GPU with <16GB VRAM
+  load_in_4bit: false
   load_in_8bit: false
-  bnb_4bit_quant_type: "nf4"   # nf4 | fp4
+  bnb_4bit_quant_type: "nf4"
   bnb_4bit_compute_dtype: "bfloat16"
   bnb_4bit_use_double_quant: true

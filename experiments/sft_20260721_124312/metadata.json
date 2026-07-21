@@ -1,0 +1,21 @@
+{
+  "start_time": "2026-07-21T12:43:12.879548",
+  "base_model": "Qwen/Qwen3-0.6B",
+  "lora_preset": "attention_only",
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "lora_targets": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "train_samples": 500,
+  "eval_samples": 50,
+  "epochs": 3,
+  "batch_size": 2,
+  "learning_rate": 0.0002
+}

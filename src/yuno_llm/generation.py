@@ -75,27 +75,47 @@ class YunoGenerator:
         **generation_kwargs,
     ) -> str:
         """
-        Runs the chat completion loop with Memory retrieval, Planning,
-        and HITL Safe Tool Use interception.
+        Runs the full YUNO OS chat loop:
+          1. Intent classification (TOOL_CALL / MEMORY_QUERY / PLAN / CHAT)
+          2. Dynamic system prompt with memory context
+          3. LLM generation with streaming support
+          4. Thought-block stripping (<think>...</think>)
+          5. Episodic memory storage for future recall
         """
-        # 1. Parse intent to check if we can run a tool immediately
-        tool_name, tool_args = self.planner.parse_intent(user_message)
-        if tool_name:
+        from .planner import IntentType
+
+        # 1. Classify intent
+        intent, tool_name, tool_args = self.planner.parse_intent(user_message)
+
+        # ── Tool call: execute immediately ────────────────────────────────
+        if intent == IntentType.TOOL_CALL and tool_name:
             tool_output = self.tools.run_tool(tool_name, **tool_args)
+            self.memory.add_chat_turn("user", user_message)
+            self.memory.add_chat_turn("assistant", tool_output)
             return tool_output
 
-        # 2. Retrieve Memory Context
-        memory_context = self.memory.compile_memory_context()
+        # ── Memory query: search episodic memory and return summary ───────
+        if intent == IntentType.MEMORY_QUERY:
+            query = tool_args.get("query", user_message)
+            hits = self.memory.search_memory(query)
+            if hits:
+                lines = [f"[{h.timestamp}] {h.content}" for h in hits]
+                result = "Yeh raha maine jo yaad rakha:\n" + "\n".join(lines)
+            else:
+                result = "Mujhe koi relevant memory nahi mili. Kya aap aur details de sakte hain?"
+            self.memory.add_chat_turn("user", user_message)
+            self.memory.add_chat_turn("assistant", result)
+            return result
+
+        # ── Chat / Plan: run through LLM ──────────────────────────────────
         self.memory.add_chat_turn("user", user_message)
 
-        # 3. Compile System Prompt with Memory Context
-        sys_prompt = self._identity.system_prompt
-        if memory_context:
-            sys_prompt += f"\n\nActive Context Info:\n{memory_context}"
-
+        # 2. Build dynamic system prompt (injects date, user name, memory)
         messages = self._identity.apply_system_prompt(
             self.memory.get_chat_history(),
-            override_system=sys_prompt if not system_override else system_override,
+            override_system=system_override,
+            memory=self.memory,
+            last_user_message=user_message,
         )
 
         # Format with chat template
@@ -111,7 +131,7 @@ class YunoGenerator:
         gen_kwargs["eos_token_id"] = self._tokenizer.eos_token_id
         gen_kwargs["pad_token_id"] = self._tokenizer.eos_token_id
 
-        # Generate response
+        # 3. Generate
         t0 = time.time()
         with torch.no_grad():
             output = self._model.generate(**inputs, **gen_kwargs)
@@ -119,13 +139,25 @@ class YunoGenerator:
 
         input_len = inputs["input_ids"].shape[1]
         new_tokens = output[0][input_len:]
-        response = self._tokenizer.decode(new_tokens, skip_special_tokens=True)
+        raw_response = self._tokenizer.decode(new_tokens, skip_special_tokens=True)
 
         tps = len(new_tokens) / elapsed
         logger.info(f"Generated {len(new_tokens)} tokens in {elapsed:.2f}s ({tps:.1f} tok/s)")
 
-        # Save assistant output to short term memory
+        # 4. Strip <think> blocks from the visible response
+        thought, response = self.planner.extract_thought_steps(raw_response)
+        if thought:
+            logger.debug(f"[Planner] Thought block: {thought[:200]}")
+
+        # 5. Save to short-term memory and episodic store
         self.memory.add_chat_turn("assistant", response)
+        # Store meaningful turns as episodic memories for future recall
+        if len(user_message) > 20:
+            self.memory.add_episodic_entry(
+                content=f"User: {user_message[:300]} | YUNO: {response[:300]}",
+                tags="conversation",
+                source="chat",
+            )
 
         return response
 
@@ -136,32 +168,44 @@ class YunoGenerator:
         **generation_kwargs,
     ) -> Generator[str, None, None]:
         """
-        Streaming chat with integrated planning and memory context.
+        Streaming chat with integrated planning, memory context, and thought stripping.
         """
         from transformers import TextIteratorStreamer
         from threading import Thread
+        from .planner import IntentType
 
-        # 1. Intent check
-        tool_name, tool_args = self.planner.parse_intent(user_message)
-        if tool_name:
+        # 1. Intent classification
+        intent, tool_name, tool_args = self.planner.parse_intent(user_message)
+
+        if intent == IntentType.TOOL_CALL and tool_name:
             tool_output = self.tools.run_tool(tool_name, **tool_args)
-            # Yield full tool output in streaming format
             yield tool_output
             self.memory.add_chat_turn("user", user_message)
             self.memory.add_chat_turn("assistant", tool_output)
             return
 
-        # 2. Retrieve Memory Context
-        memory_context = self.memory.compile_memory_context()
-        self.memory.add_chat_turn("user", user_message)
+        if intent == IntentType.MEMORY_QUERY:
+            query = tool_args.get("query", user_message)
+            hits = self.memory.search_memory(query)
+            if hits:
+                result = "Yeh raha maine jo yaad rakha:\n" + "\n".join(
+                    f"[{h.timestamp}] {h.content}" for h in hits
+                )
+            else:
+                result = "Mujhe koi relevant memory nahi mili."
+            yield result
+            self.memory.add_chat_turn("user", user_message)
+            self.memory.add_chat_turn("assistant", result)
+            return
 
-        sys_prompt = self._identity.system_prompt
-        if memory_context:
-            sys_prompt += f"\n\nActive Context Info:\n{memory_context}"
+        # 2. Chat / Plan path
+        self.memory.add_chat_turn("user", user_message)
 
         messages = self._identity.apply_system_prompt(
             self.memory.get_chat_history(),
-            override_system=sys_prompt if not system_override else system_override,
+            override_system=system_override,
+            memory=self.memory,
+            last_user_message=user_message,
         )
         text = self._tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
@@ -187,15 +231,53 @@ class YunoGenerator:
         thread = Thread(target=self._model.generate, kwargs=gen_kwargs, daemon=True)
         thread.start()
 
-        full_response = []
+        # Stream tokens, but suppress <think>...</think> blocks from output
+        full_response: List[str] = []
+        in_think_block = False
+        buffer = ""
+
         for chunk in streamer:
+            buffer += chunk
             full_response.append(chunk)
-            yield chunk
+
+            # Detect start of think block
+            if "<think>" in buffer and not in_think_block:
+                in_think_block = True
+                # Yield anything before <think>
+                before = buffer[: buffer.index("<think>")]
+                if before:
+                    yield before
+                buffer = buffer[buffer.index("<think>"):]
+                continue
+
+            # Detect end of think block
+            if in_think_block and "</think>" in buffer:
+                in_think_block = False
+                after = buffer[buffer.index("</think>") + len("</think>"):]
+                buffer = after
+                continue
+
+            # Yield normally if not in a think block
+            if not in_think_block:
+                yield buffer
+                buffer = ""
+
+        # Yield any remaining buffer
+        if buffer and not in_think_block:
+            yield buffer
 
         thread.join()
 
-        # Update active conversation memory
-        self.memory.add_chat_turn("assistant", "".join(full_response))
+        # Save to memory
+        raw = "".join(full_response)
+        _, clean_response = self.planner.extract_thought_steps(raw)
+        self.memory.add_chat_turn("assistant", clean_response)
+        if len(user_message) > 20:
+            self.memory.add_episodic_entry(
+                content=f"User: {user_message[:300]} | YUNO: {clean_response[:300]}",
+                tags="conversation",
+                source="stream",
+            )
 
     def reset_history(self) -> None:
         """Clear conversation history."""
@@ -208,3 +290,56 @@ class YunoGenerator:
             f"identity={self._identity.name!r}, "
             f"history_turns={len(self.memory.get_chat_history())//2})"
         )
+
+
+if __name__ == "__main__":
+    import sys
+    from pathlib import Path
+    root_dir = Path(__file__).parent.parent.parent
+    sys.path.insert(0, str(root_dir / "src"))
+
+    from yuno_llm.config import YunoConfig
+    from yuno_llm.identity import YunoIdentity
+    from yuno_llm.memory import YunoMemory
+    from yuno_llm.tools import YunoToolRegistry
+    from yuno_llm.planner import YunoPlanner
+    from yuno_llm.automation import YunoAutomation
+
+    cfg = YunoConfig.from_yaml("config/yuno_config.yaml")
+    identity = YunoIdentity(cfg)
+    memory = YunoMemory(cfg)
+    tools = YunoToolRegistry(cfg)
+    planner = YunoPlanner(cfg)
+    automation = YunoAutomation(cfg)
+
+    print("=" * 65)
+    print("  YUNO-LLM v0.5.0 PERSONAL AI OPERATING SYSTEM")
+    print("=" * 65)
+    print(f"  Persona:             {identity.name}")
+    print(f"  Short-Term Window:   {cfg.memory.max_short_term_turns} turns")
+    print(f"  Episodic Database:   SQLite FTS5")
+    print(f"  Registered Tools:    {len(tools.list_tools())} tools")
+    print("=" * 65)
+    print("  Type 'exit' or 'quit' to exit.\n")
+
+    user_name = memory.get_personal_fact("user_name", "User")
+    while True:
+        try:
+            prompt = input(f"{user_name} > ").strip()
+            if not prompt:
+                continue
+            if prompt.lower() in ("exit", "quit"):
+                print("YUNO: Alvida! Phir milenge.")
+                break
+
+            intent, tool_name, tool_args = planner.parse_intent(prompt)
+            if intent.name == "TOOL_CALL" and tool_name:
+                print(f"[YUNO Planning] Tool Call Detected: {tool_name} with args {tool_args}")
+                result = tools.run_tool(tool_name, **tool_args)
+                safe_out = result.encode(sys.stdout.encoding or "utf-8", errors="replace").decode(sys.stdout.encoding or "utf-8")
+                print(f"[YUNO Tool Output]\n{safe_out}")
+            else:
+                print(f"YUNO: Main aapki baat samajh gaya. How can I help you further with '{prompt}'?")
+        except (KeyboardInterrupt, EOFError):
+            print("\nYUNO: Session ended.")
+            break

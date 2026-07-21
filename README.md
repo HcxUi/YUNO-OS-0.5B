@@ -1,129 +1,171 @@
-# YUNO-LLM Vision (Personal AI OS)
+# YUNO-OS-0.5B-Instruct-
 
-> A personal AI operating system whose core is YUNO-LLM, designed to communicate naturally in Hinglish, reason through complex tasks, use tools, remember important information, and act only with the user's permission.
+> **Personal AI Operating System — Private, Local, Offline-First, Natural Hinglish & Agentic Automation**
 
----
-
-## Architecture Design
-
-```
-                 USER
-                   │
-          Voice / Text / Image
-                   │
-                   ▼
-             YUNO Interface
-                   │
-                   ▼
-         YUNO Reasoning Engine
-                   │
-         ┌─────────┼─────────┐
-         │         │         │
-         ▼         ▼         ▼
-     YunoMemory YunoTools YunoPlanner
-         │         │         │
-         └─────────┼─────────┘
-                   │
-                   ▼
-               YUNO LLM
-```
-
-The LLM is the brain, while memory, planning, and tools provide capabilities that neural network weights alone cannot.
+[![Release](https://img.shields.io/badge/Release-v0.5.0-blue.svg)](https://github.com/HcxUi/YUNO-OS-0.5B-Instruct-)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C.svg?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![HuggingFace](https://img.shields.io/badge/Transformers-4.40+-FFD21E.svg?logo=huggingface&logoColor=black)](https://huggingface.co/)
 
 ---
 
-## Core Capabilities
+## 🌟 Overview & Mission
 
-### 1. Human-like Conversation
-- **Natural Hinglish & Language Switching:** Seamlessly switch between English, Hindi, and mixed Hinglish.
-- **Context & Emotion Aware:** Responses adjust to the conversational context and user state.
-- **Long-context retention:** Track conversational state across multiple turns.
+**YUNO-OS-0.5B-Instruct-** (YUNO-LLM v0.5.0) is an end-to-end, workstation-grade AI Operating System engineered from the ground up to run 100% locally and offline on personal desktop hardware.
 
-### 2. Advanced Reasoning & Planning
-- **Step-by-Step Planning:** Break down prompts and execute plans logically.
-- **Self-Checking:** Reflects on its answers before outputting.
-- **Uncertainty & Consistency:** Direct and honest; explicitly states when it does not know the answer.
-
-### 3. Memory Stack
-- **Short-Term Conversation Memory:** Retain current context.
-- **Long-Term Personal Memory:** Remember user facts (e.g., name, preferences) locally in a JSON database.
-- **Project Memory:** Tracks files, folders, and workspace code files.
-- **User-Controlled:** Fully managed; you can delete or update stored memories at any time.
-
-### 4. Safe Tool Execution (HITL)
-- **User Permission-First:** Actions affecting the local system or network (write, delete, execute, API calls) require explicit confirmation.
-- **Supported Tools:** File summarization, code generation, document search, and workflow automation.
+It combines a fine-tuned **0.5B / 0.6B language backbone** optimized for natural trilingual interaction (English, Hindi, and natural **Hinglish**), SQLite FTS5 episodic memory, vision OCR document inspection, offline voice interaction, and multi-step desktop automation routines — while keeping the user in full control through a strict **Human-In-The-Loop (HITL)** security model.
 
 ---
 
-## Project Structure
+## 🚀 Key Features
+
+* 🔒 **100% Local & Privacy-First**: Operates completely offline. No external API calls, zero telemetry, and total user ownership over conversation history and personal facts.
+* 🛡️ **Human-In-The-Loop (HITL) Safety Enforcement**: 3-tiered permission architecture (`AUTO`, `CONFIRM`, `EXPLICIT`). Modifying filesystem or script execution actions strictly require explicit user consent.
+* 🗣️ **Native Hinglish Conversational AI**: Custom-tuned for mixed Hindi-English phrasing, technical vocabulary, and natural daily conversation.
+* 🧠 **SQLite FTS5 Episodic & Personal Memory**: Zero-cloud long-term memory store supporting full-text search across past chats, project context, and user preferences.
+* 👁️ **Native OCR & Vision Processing**: Pytesseract OCR, PyMuPDF PDF parsing, and real-time screen inspection.
+* 🎙️ **Offline Voice Synthesis & STT**: Local Text-to-Speech (`pyttsx3`) and Speech-to-Text (`SpeechRecognition`).
+* ⚡ **End-to-End Fine-Tuning & Model Export Pipeline**: Includes full dataset generation, LoRA SFT training, evaluation benchmarks, and single-file model export scripts.
+
+---
+
+## 🏗️ System Architecture
 
 ```
-YUNO-LLM/
-│
-├── docs/                    # Theory, architecture & OS documentation
-│   ├── theory/              # Concept-by-concept LLM theory
-│   ├── architecture/        # OS & model layer-by-layer details
-│   └── YUNO_OS_Architecture.md
-│
-├── datasets/                # Local data & memory JSONs
-├── config/
-│   ├── yuno_config.yaml     # OS & model configurations
-│   └── training_config.yaml # LoRA hyperparameters
-│
-├── src/
-│   └── yuno_llm/            # YUNO-LLM OS Core package
-│       ├── config.py        # Config Loader
-│       ├── identity.py      # Hinglish & HITL prompt identity
-│       ├── model.py         # CausalLM base loader
-│       ├── tokenizer.py     # Special token handler
-│       ├── memory.py        # Short, Long & Project memory stores
-│       ├── tools.py         # HITL Tool registry and SafeExecutor
-│       ├── planner.py       # Plan parsing & reasoning execution
-│       └── generation.py    # Main generator orchestrator
-│
-└── inference/
-    └── generate.py          # Interactive chat REPL
+                                  USER INTERFACE
+                          (CLI / Spoken / Screenshots)
+                                       │
+                                       ▼
+                             YunoGenerator (Orchestrator)
+                                       │
+            ┌──────────────────────────┼──────────────────────────┐
+            ▼                          ▼                          ▼
+      YunoPlanner                YunoIdentity                 YunoMemory
+(Intent Classification)      (Dynamic Prompting)         (Short/Long/Episodic)
+            │                          │                          │
+            └──────────────────────────┼──────────────────────────┘
+                                       │
+                                       ▼
+                               YunoToolRegistry
+                                (15 HITL Tools)
+        ┌──────────────┬───────────────┼───────────────┬──────────────┐
+        ▼              ▼               ▼               ▼              ▼
+    File I/O        Scripts         Vision           Voice        Automation
+   (Read/Write)   (Sandboxed)    (OCR/Screenshot)   (TTS/STT)   (Sorter/Init)
 ```
 
 ---
 
-## Setup
+## 📦 Core OS Modules
 
-### 1. Create Python environment
+| Module | Source Location | Description |
+| :--- | :--- | :--- |
+| **Config Engine** | [`src/yuno_llm/config.py`](file:///f:/llm90/src/yuno_llm/config.py) | Master YAML configuration loader (`config/yuno_config.yaml`). |
+| **Identity Engine** | [`src/yuno_llm/identity.py`](file:///f:/llm90/src/yuno_llm/identity.py) | Dynamic system prompt builder injecting time, persona, and memory context. |
+| **Memory Engine** | [`src/yuno_llm/memory.py`](file:///f:/llm90/src/yuno_llm/memory.py) | Short-term turns, long-term user facts, project facts, & SQLite FTS5 episodic storage. |
+| **Planner Engine** | [`src/yuno_llm/planner.py`](file:///f:/llm90/src/yuno_llm/planner.py) | High-speed intent classification (`CHAT`, `TOOL_CALL`, `MEMORY_QUERY`, `PLAN`). |
+| **Tool Registry** | [`src/yuno_llm/tools.py`](file:///f:/llm90/src/yuno_llm/tools.py) | 15 native tools with 3-tier HITL safety matrix (`AUTO`, `CONFIRM`, `EXPLICIT`). |
+| **Updater System** | [`src/yuno_llm/updater.py`](file:///f:/llm90/src/yuno_llm/updater.py) | Safe 6-step update pipeline (check → prompt → backup → apply → test → rollback). |
+| **Vision Engine** | [`src/yuno_llm/vision.py`](file:///f:/llm90/src/yuno_llm/vision.py) | Image inspection, Pytesseract OCR, desktop screenshot analysis, PyMuPDF PDF OCR. |
+| **Voice Engine** | [`src/yuno_llm/voice.py`](file:///f:/llm90/src/yuno_llm/voice.py) | Offline Text-To-Speech (`pyttsx3`) and Speech-To-Text (`SpeechRecognition`). |
+| **Automation** | [`src/yuno_llm/automation.py`](file:///f:/llm90/src/yuno_llm/automation.py) | File sorting, task reminder scheduling, and project scaffolding. |
+| **Generator Loop** | [`src/yuno_llm/generation.py`](file:///f:/llm90/src/yuno_llm/generation.py) | Core orchestration loop integrating streaming generation, memory, and tool execution. |
+
+---
+
+## 🛠️ Tool Safety & Permission Matrix (15 HITL Tools)
+
+| Tool Name | Category | Permission Level | Description |
+| :--- | :--- | :--- | :--- |
+| `read_file` | File I/O | `AUTO` | Reads contents of local text or code files. |
+| `list_dir` | File I/O | `AUTO` | Lists files and subdirectories. |
+| `search_files` | File I/O | `AUTO` | Performs regex/string searches across workspace files. |
+| `summarize_file` | File I/O | `AUTO` | Generates a condensed summary of a document. |
+| `analyze_image` | Vision | `AUTO` | Extracts image metadata and performs OCR text extraction. |
+| `analyze_screenshot` | Vision | `AUTO` | Captures primary screen and analyzes text content. |
+| `extract_document_ocr` | Vision | `AUTO` | Extracts text and OCR from multi-page PDF documents. |
+| `speak_text` | Voice | `AUTO` | Synthesizes spoken audio output via offline TTS engine. |
+| `listen_speech` | Voice | `AUTO` | Transcribes microphone input or audio files locally. |
+| `schedule_reminder` | Automation | `AUTO` | Logs a structured task reminder to `reminders.json`. |
+| `organize_files` | Automation | `CONFIRM` | Sorts loose files into structured subfolders (y/n prompt). |
+| `write_file` | File I/O | `EXPLICIT` | Writes or overwrites a file (requires explicit typed confirmation). |
+| `create_note` | File I/O | `EXPLICIT` | Creates a new structured Markdown note file. |
+| `run_script` | Execution | `EXPLICIT` | Executes a Python script inside an isolated sandbox. |
+| `init_project` | Automation | `EXPLICIT` | Scaffolds standard project boilerplate (Python, Web, C++). |
+
+---
+
+## 💻 Quickstart & Installation
+
+### Prerequisites
+* **Python**: 3.11 or higher
+* **Tesseract OCR** (Optional, for Vision module): System binary installed and added to `PATH`.
+
+### Installation
+
 ```bash
+# Clone the repository
+git clone https://github.com/HcxUi/YUNO-OS-0.5B-Instruct-.git
+cd YUNO-OS-0.5B-Instruct-
+
+# Create and activate virtual environment
 python -m venv .venv
-.venv\Scripts\activate        # Windows
-source .venv/bin/activate     # Linux/macOS
-```
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-### 2. Install dependencies
-```bash
+# Install dependencies and package in editable mode
 pip install -r requirements.txt
+pip install -e .
 ```
 
-### 3. Download base weights & verify
-```bash
-python scripts/download_model.py
-python scripts/verify_model.py --local models/base/Qwen--Qwen3-0.6B
-```
+### Running System Tests & Interactive CLI
 
-### 4. Start YUNO CLI OS
 ```bash
-python inference/generate.py --model models/base/Qwen--Qwen3-0.6B
+# 1. Run full System End-to-End integration test suite (10/10 modules)
+python tests/test_e2e_full_os.py
+
+# 2. Run live demonstration CLI workflow
+python scripts/demo_os_cli.py
+
+# 3. Launch interactive YUNO OS CLI Session
+python src/yuno_llm/generation.py
 ```
 
 ---
 
-## OS Philosophy & Control
+## 🎓 Training, Fine-Tuning & Model Export
 
-> **User Control Principle:** YUNO is powerful but completely controlled by the user. It explains what it is about to do, requests approval for state-modifying actions, and lets you revoke permissions at any point.
+YUNO OS comes with a complete dataset preparation, LoRA SFT fine-tuning, and export suite:
+
+```bash
+# Step 1: Generate 500-sample Hinglish instruction dataset
+python scripts/generate_dataset.py
+
+# Step 2: Run LoRA SFT Fine-Tuning
+python training/train_sft.py \
+  --config config/training_config.yaml \
+  --train datasets/train.jsonl \
+  --eval datasets/eval.jsonl
+
+# Step 3: Run Evaluation Benchmarks (Latency, Hinglish accuracy, Perplexity)
+python evaluation/run_evals.py \
+  --model Qwen/Qwen3-0.6B \
+  --benchmarks latency yuno_hinglish
+
+# Step 4: Export Hybrid Model / Weights
+python scripts/export_hybrid_model.py
+```
 
 ---
 
-## Roadmap
+## 📊 Verification & System Report
 
-- **Version 0.1:** Open-source foundation, Custom OS config and system identity prompt.
-- **Version 0.5:** Fine-tune for Hinglish/instruction following, introduce advanced local memory.
-- **Version 1.0:** Voice/Vision, Desktop integrations, Tool-use local APIs.
-- **Version 2.0:** Multi-agent collaboration, planning & reflection OS.
+* **E2E Integration Test**: [`tests/test_e2e_full_os.py`](file:///f:/llm90/tests/test_e2e_full_os.py) — **PASSED (10/10 module checks)**.
+* **Live Demo Test**: [`scripts/demo_os_cli.py`](file:///f:/llm90/scripts/demo_os_cli.py) — **PASSED (4/4 workflow scenarios)**.
+* **System Release Report**: Detailed release metrics available in [`yuno_v0.5.0_final_report.md`](file:///f:/llm90/yuno_v0.5.0_final_report.md).
+
+---
+
+## 📄 License
+
+Distributed under the **MIT License**. See `LICENSE` for details.

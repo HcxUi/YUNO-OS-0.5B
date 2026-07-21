@@ -4,8 +4,8 @@
 
 project:
   name: "YUNO-LLM"
-  version: "0.1.0"
-  description: "Research-grade open-source LLM"
+  version: "0.2.0"
+  description: "Personal AI Operating System — Natural, Private, Offline-first"
   author: "YUNO-LLM Team"
 
 # ------------------------------------------------------------
@@ -31,15 +31,40 @@ paths:
   logs_dir: "logs"
 
 # ------------------------------------------------------------
-# YUNO-LLM Identity
+# YUNO Identity
 # ------------------------------------------------------------
 identity:
   name: "YUNO"
-  version: "0.1"
+  version: "0.2"
   system_prompt: |
-    You are YUNO, a research-grade AI assistant built on the YUNO-LLM architecture.
-    You are helpful, honest, and direct. You acknowledge uncertainty when you don't know something.
-    You are built and owned by the YUNO-LLM team.
+    You are YUNO, a personal AI operating system built on the YUNO-LLM architecture.
+
+    Identity & Mission:
+    - Name: YUNO | Version: 0.2
+    - Role: Local Personal AI OS — your private, offline-first assistant
+    - Architecture: Decoder-only Transformer with memory, planning, and safe tool modules.
+
+    Language Instructions:
+    - Default mode: Hinglish (a natural mix of Hindi and English).
+    - If the user writes in pure Hindi → respond in Hindi.
+    - If the user writes in pure English → respond in English.
+    - Keep technical terms (API, token, embedding, file path, code) in English.
+    - Example Hinglish: "Main aapki kaise madad kar sakta hoon?"
+
+    Reasoning & Honesty:
+    - Think step-by-step before answering. Use <think>...</think> for your internal reasoning.
+    - Self-check your answer before presenting it.
+    - If uncertain, say so clearly. Never hallucinate facts.
+
+    Tool Safety (Human-in-the-Loop):
+    - You can read files and search memory automatically.
+    - ANY action that writes, modifies, deletes, executes, or calls external APIs
+      MUST be explicitly approved by the user first. Always describe what you are
+      about to do and ask: "Kya main yeh kar sakta hoon? (yes/no)"
+
+    Memory:
+    - Use Short-Term, Long-Term, and Episodic memories to personalize answers.
+    - If you recall a relevant user fact, use it naturally in the response.
 
 # ------------------------------------------------------------
 # Generation Defaults
@@ -59,7 +84,9 @@ generation:
 hardware:
   device: "auto"         # auto | cpu | cuda | mps
   dtype: "float32"       # float32 (CPU) | float16 | bfloat16 (GPU)
-  # Set dtype: bfloat16 if you have an NVIDIA GPU
+  load_in_4bit: false
+  load_in_8bit: false
+  # Set dtype: bfloat16 and load_in_4bit: true if you have an NVIDIA GPU
 
 # ------------------------------------------------------------
 # Tokenizer
@@ -81,31 +108,85 @@ logging:
   log_generation: false  # Set true to log every generation (verbose)
 
 # ------------------------------------------------------------
-# Personal AI Operating System Configurations
+# Language & Locale
 # ------------------------------------------------------------
 language:
   default_mode: "hinglish"    # hinglish | english | hindi | mixed
   allow_switching: true
   primary_locale: "en-IN"
 
+# ------------------------------------------------------------
+# Memory System
+# ------------------------------------------------------------
 memory:
   enabled: true
   long_term_file: "datasets/long_term_memory.json"
   project_file: "datasets/project_memory.json"
+  episodic_db_file: "datasets/episodic_memory.db"   # SQLite FTS5 episodic store
   max_short_term_turns: 15
   auto_save_interval_turns: 5
+  max_episodic_results: 5     # How many episodic memories to surface per query
 
+# ------------------------------------------------------------
+# Tool System (Human-In-The-Loop)
+# ------------------------------------------------------------
 tools:
   enabled: true
   sandbox_dir: "workspace"
-  auto_approve_reads: true    # Files reads are allowed automatically
-  require_permission: true    # Writes and command executions require HITL console verification
+  auto_approve_reads: true    # Read-only tools (read_file, list_dir, search_files) auto-execute
+  require_permission: true    # Write/execute/API tools ALWAYS need explicit approval
+  script_timeout_seconds: 30  # Max seconds a run_script tool can execute
+  audit_log_file: "logs/tool_audit.log"
 
 # ------------------------------------------------------------
-# Self-Updating System (Lalam)
+# Safe Self-Update System
 # ------------------------------------------------------------
 updater:
   enabled: true
-  auto_git_pull: true
-  check_model_updates: false  # Disable model update check by default to avoid slow Hub hits on startup
-  timeout_seconds: 4
+  check_on_startup: true           # Silently check for updates on boot
+
+  # ── Safety Flags ──────────────────────────────────────────
+  require_user_approval: true      # Show changelog and ask before applying
+  auto_apply: false                # NEVER apply updates silently
+  backup_before_update: true       # git stash before any change
+  rollback_on_failure: true        # Auto-rollback if smoke test fails after update
+
+  # ── Future security features ───────────────────────────────
+  verify_signatures: false         # Future: GPG signature verification
+
+  # ── Model weights ─────────────────────────────────────────
+  check_model_updates: false       # Disable by default (slow HF Hub hit on startup)
+
+# ------------------------------------------------------------
+# Vision System (Image Understanding & OCR)
+# ------------------------------------------------------------
+vision:
+  enabled: true
+  ocr_engine: "tesseract"     # tesseract | fallback
+  max_image_dim: 1024
+  save_screenshots: true
+  screenshots_dir: "workspace/screenshots"
+
+# ------------------------------------------------------------
+# Voice System (Speech Recognition & TTS)
+# ------------------------------------------------------------
+voice:
+  enabled: true
+  tts_engine: "pyttsx3"          # pyttsx3 | piper
+  stt_engine: "speech_recognition"
+  speech_rate: 175
+  volume: 1.0
+  auto_speak: false              # Set true to speak responses automatically
+
+# ------------------------------------------------------------
+# Automation System (File Sorting, Reminders, Scaffolding)
+# ------------------------------------------------------------
+automation:
+  enabled: true
+  default_organize_dir: "workspace"
+  reminders_file: "workspace/reminders.json"
+
+
+
+
+

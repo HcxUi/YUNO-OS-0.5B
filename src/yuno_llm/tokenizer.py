@@ -98,6 +98,16 @@ class YunoTokenizer:
         """Encode plain text (not chat formatted)."""
         return self._tokenizer(text, **kwargs)
 
+    def add_special_tokens(self, extra_tokens: Optional[List[str]] = None) -> int:
+        """Add YUNO special tokens to underlying tokenizer vocabulary."""
+        tokens = ["<think>", "</think>", "<tool_call>", "</tool_call>", "<tool_response>", "</tool_response>"]
+        if extra_tokens:
+            tokens.extend(extra_tokens)
+        num_added = self._tokenizer.add_special_tokens({"additional_special_tokens": tokens})
+        self.vocab_size = len(self._tokenizer)
+        logger.info(f"[YunoTokenizer] Added {num_added} special tokens. New vocab size: {self.vocab_size:,}")
+        return num_added
+
     def __call__(self, *args, **kwargs):
         """Pass-through to underlying tokenizer."""
         return self._tokenizer(*args, **kwargs)

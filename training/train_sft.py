@@ -147,7 +147,6 @@ def train(args):
         weight_decay=t_cfg.get("weight_decay", 0.01),
         warmup_ratio=t_cfg.get("warmup_ratio", 0.03),
         lr_scheduler_type=t_cfg.get("lr_scheduler_type", "cosine"),
-        max_seq_length=t_cfg.get("max_seq_length", 2048),
         fp16=args.fp16 or t_cfg.get("fp16", False),
         bf16=args.bf16 or t_cfg.get("bf16", False),
         logging_steps=t_cfg.get("logging_steps", 10),
@@ -168,7 +167,7 @@ def train(args):
         args=training_args,
         train_dataset=train_ds,
         eval_dataset=eval_ds,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
     )
 
     # ── Log experiment metadata ───────────────────────────────────────────────
