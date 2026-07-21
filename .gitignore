@@ -56,9 +56,11 @@ tmp/
 temp/
 scratch/
 
-# Proprietary model containers & large binary parts (too large for git)
+# Proprietary model containers & large binary parts
 *.yuno
+extracted_model/
 *.yuno.part*
+!YUNO_OS_Release_Package/*.yuno.part*
 *.db
 *.sqlite
 *.sqlite3
