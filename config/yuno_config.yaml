@@ -1,0 +1,81 @@
+# ============================================================
+# YUNO-LLM Master Configuration
+# ============================================================
+
+project:
+  name: "YUNO-LLM"
+  version: "0.1.0"
+  description: "Research-grade open-source LLM"
+  author: "YUNO-LLM Team"
+
+# ------------------------------------------------------------
+# Base Model
+# ------------------------------------------------------------
+base_model:
+  name: "Qwen/Qwen3-0.6B"
+  revision: "main"
+  trust_remote_code: true
+  # Options: Qwen/Qwen3-0.6B | Qwen/Qwen3-1.7B | Qwen/Qwen3-4B | Qwen/Qwen3-8B
+  # Start with 0.6B for CPU-only environments
+
+# ------------------------------------------------------------
+# Paths
+# ------------------------------------------------------------
+paths:
+  models_dir: "models"
+  base_model_dir: "models/base"
+  yuno_model_dir: "models/yuno"
+  checkpoints_dir: "checkpoints"
+  datasets_dir: "datasets"
+  experiments_dir: "experiments"
+  logs_dir: "logs"
+
+# ------------------------------------------------------------
+# YUNO-LLM Identity
+# ------------------------------------------------------------
+identity:
+  name: "YUNO"
+  version: "0.1"
+  system_prompt: |
+    You are YUNO, a research-grade AI assistant built on the YUNO-LLM architecture.
+    You are helpful, honest, and direct. You acknowledge uncertainty when you don't know something.
+    You are built and owned by the YUNO-LLM team.
+
+# ------------------------------------------------------------
+# Generation Defaults
+# ------------------------------------------------------------
+generation:
+  max_new_tokens: 512
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 50
+  repetition_penalty: 1.1
+  do_sample: true
+  stream: true
+
+# ------------------------------------------------------------
+# Hardware
+# ------------------------------------------------------------
+hardware:
+  device: "auto"         # auto | cpu | cuda | mps
+  dtype: "float32"       # float32 (CPU) | float16 | bfloat16 (GPU)
+  # Set dtype: bfloat16 if you have an NVIDIA GPU
+
+# ------------------------------------------------------------
+# Tokenizer
+# ------------------------------------------------------------
+tokenizer:
+  padding_side: "right"
+  truncation_side: "right"
+  max_length: 2048
+  add_special_tokens: true
+
+# ------------------------------------------------------------
+# Logging
+# ------------------------------------------------------------
+logging:
+  level: "INFO"          # DEBUG | INFO | WARNING | ERROR
+  log_to_file: true
+  log_file: "logs/yuno_llm.log"
+  log_model_info: true
+  log_generation: false  # Set true to log every generation (verbose)
