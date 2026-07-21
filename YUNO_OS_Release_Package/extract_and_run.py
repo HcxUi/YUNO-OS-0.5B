@@ -35,30 +35,7 @@ CHAT_TEMPLATE = (
 
 XOR_KEY = 0x77
 
-import glob
-
-def check_and_reassemble_container(target_bin):
-    if os.path.exists(target_bin):
-        return target_bin
-
-    search_dir = os.path.dirname(target_bin) or "."
-    parts = sorted(glob.glob(os.path.join(search_dir, "*.yuno.part*")))
-    if not parts:
-        parts = sorted(glob.glob("*.yuno.part*"))
-
-    if parts:
-        print(f"[*] Found {len(parts)} protected container chunk parts. Reassembling binary container...")
-        with open(target_bin, "wb") as out_f:
-            for p in parts:
-                print(f"  + Joining part: {os.path.basename(p)}")
-                with open(p, "rb") as in_f:
-                    shutil.copyfileobj(in_f, out_f)
-        print(f"[+] Container reassembled successfully: {target_bin} ({os.path.getsize(target_bin):,} bytes)")
-        return target_bin
-    return target_bin
-
 def extract_yuno_bin(bin_path, target_dir):
-    bin_path = check_and_reassemble_container(bin_path)
     print(f"[*] Unpacking official YUNO OS model '{bin_path}' into '{target_dir}'...")
     os.makedirs(target_dir, exist_ok=True)
     

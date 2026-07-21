@@ -125,16 +125,11 @@ def parse_reasoning_and_answer(raw_text):
                     return "\n".join(lines[:i]).strip(), "\n".join(lines[i:]).strip()
         return "", text
 
-@st.cache_resource(show_spinner="⏳ Unpacking & Loading YUNO OS Protected Binary Container...")
+@st.cache_resource(show_spinner="⏳ Loading YUNO OS Hybrid AI Model & Tokenizer...")
 def load_yuno_model():
-    if not os.path.exists(MODEL_DIR) or not os.path.exists(os.path.join(MODEL_DIR, "pytorch_model.bin")):
-        try:
-            from extract_and_run import extract_yuno_bin, MODEL_FILE
-            target_path = MODEL_FILE if os.path.exists(MODEL_FILE) else "yuno-os-v0.5.0.yuno"
-            extract_yuno_bin(target_path, MODEL_DIR)
-        except Exception as e:
-            st.error(f"Failed to extract container: {e}")
-            st.stop()
+    if not os.path.exists(MODEL_DIR):
+        st.error(f"Extracted model directory not found at '{MODEL_DIR}'. Please run extract_and_run.py first.")
+        st.stop()
     
     config = AutoConfig.from_pretrained(MODEL_DIR)
     tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR, trust_remote_code=True)
