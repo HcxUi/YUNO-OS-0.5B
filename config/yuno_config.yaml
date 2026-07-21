@@ -101,3 +101,11 @@ tools:
   auto_approve_reads: true    # Files reads are allowed automatically
   require_permission: true    # Writes and command executions require HITL console verification
 
+# ------------------------------------------------------------
+# Self-Updating System (Lalam)
+# ------------------------------------------------------------
+updater:
+  enabled: true
+  auto_git_pull: true
+  check_model_updates: false  # Disable model update check by default to avoid slow Hub hits on startup
+  timeout_seconds: 4

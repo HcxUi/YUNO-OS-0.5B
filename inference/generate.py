@@ -181,6 +181,25 @@ if __name__ == "__main__":
     parser.add_argument("--no-stream", action="store_true", help="Disable streaming")
     args = parser.parse_args()
 
+    # Load YunoConfig to check updater settings
+    try:
+        sys.path.insert(0, str(ROOT / "src"))
+        from yuno_llm.config import YunoConfig
+        from yuno_llm.updater import YunoUpdater
+        config = YunoConfig.from_yaml(str(ROOT / "config" / "yuno_config.yaml"))
+        print("\n  [SYSTEM] Checking for Lalam self-system updates...")
+        updater = YunoUpdater(config)
+        summary = updater.run_auto_update()
+        if summary["internet_available"]:
+            if summary["code_updated"]:
+                print("  [SUCCESS] YUNO codebase has been updated. Please restart for changes to take effect.")
+            else:
+                print("  [SUCCESS] YUNO codebase is up to date.")
+        else:
+            print("  [INFO] Offline mode: Skipping updates.")
+    except Exception as e:
+        print(f"  [WARNING] Self-updater failed: {e}")
+
     model, tokenizer = load_model(args.model, args.adapter)
 
     if args.prompt:

@@ -19,6 +19,7 @@ from .generation import YunoGenerator
 from .memory import YunoMemory
 from .tools import YunoToolRegistry
 from .planner import YunoPlanner
+from .updater import YunoUpdater
 
 __version__ = "0.1.0"
 __author__ = "YUNO-LLM Team"
@@ -31,4 +32,5 @@ __all__ = [
     "YunoMemory",
     "YunoToolRegistry",
     "YunoPlanner",
+    "YunoUpdater",
 ]
