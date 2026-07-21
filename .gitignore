@@ -56,7 +56,22 @@ tmp/
 temp/
 scratch/
 
-# Proprietary model containers & large binary parts (too large for git)
+# Proprietary Development & Training Source Code (Ignored for Clean Public Release)
+config/
+datasets/
+docs/
+evaluation/
+experiments/
+inference/
+scripts/
+src/
+tests/
+training/
+pyproject.toml
+setup.py
+yuno.spec
+
+# Proprietary model containers & large binary parts
 *.yuno
 *.yuno.part*
 *.db
