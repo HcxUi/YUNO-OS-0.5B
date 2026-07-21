@@ -38,7 +38,7 @@ def pack_secure_yuno_model(source_dir, output_yuno):
         config = json.load(f)
         
     config["architectures"] = ["YunoForCausalLM"]
-    config["model_type"] = "qwen3"
+    config["model_type"] = "qwen2"
     config["_name_or_path"] = "hcxui/YUNO-OS-0.5B-Instruct"
     config["developer"] = "@hcxui"
     config["organization"] = "hcxui"

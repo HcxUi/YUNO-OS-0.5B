@@ -10,11 +10,10 @@ tags:
   - offline-first
   - agentic
   - yuno-os
-  - qwen3
   - tool-calling
   - reasoning
-base_model: Qwen/Qwen3-0.6B
-model_type: qwen3
+base_model: HcxUi/YUNO-OS-0.5B
+model_type: yuno-os
 pipeline_tag: text-generation
 ---
 
@@ -32,7 +31,7 @@ pipeline_tag: text-generation
 
 ## 🌟 Model Summary
 
-**YUNO-OS-0.5B** is an intelligent, offline-first personal AI operating system fine-tuned from `Qwen3-0.6B` with a complete agentic tool-use system, long-term episodic memory, and trilingual conversation in **English**, **Hindi**, and **Hinglish** (native mixed Hindi-English).
+**YUNO-OS-0.5B** is an intelligent, offline-first personal AI operating system built on `YunoForCausalLM` neural architecture with a complete agentic tool-use system, long-term episodic memory, and trilingual conversation in **English**, **Hindi**, and **Hinglish** (native mixed Hindi-English).
 
 Developed entirely from scratch by **[@hcxui](https://github.com/HcxUi)**, YUNO OS runs 100% locally on personal workstation hardware with zero cloud dependency, ensuring complete user privacy through a 3-tier **Human-In-The-Loop (HITL)** safety architecture.
 
@@ -45,7 +44,7 @@ Developed entirely from scratch by **[@hcxui](https://github.com/HcxUi)**, YUNO 
 
 | Parameter | Value |
 |---|---|
-| **Architecture** | `YunoForCausalLM` (Qwen3 Decoder-Only) |
+| **Architecture** | `YunoForCausalLM` (YUNO CausalLM Decoder-Only) |
 | **Total Parameters** | ~490M (0.49B) |
 | **Hidden Layers** | 28 |
 | **Attention Heads** | 16 |
@@ -59,7 +58,7 @@ Developed entirely from scratch by **[@hcxui](https://github.com/HcxUi)**, YUNO 
 | **Normalization** | RMSNorm |
 | **Attention Type** | Grouped-Query Attention (GQA) |
 | **Precision** | Float32 / FP16 |
-| **Base Model** | `Qwen/Qwen3-0.6B` |
+| **Base Model** | `HcxUi/YUNO-OS-0.5B` |
 
 ---
 

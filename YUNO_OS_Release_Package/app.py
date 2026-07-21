@@ -163,7 +163,7 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("<h4 style='color:#f0f6fc;'>System Specifications</h4>", unsafe_allow_html=True)
     st.markdown("<span class='badge'>Creator: @hcxui</span>", unsafe_allow_html=True)
-    st.markdown("<span class='badge'>Qwen3 Hybrid Engine</span>", unsafe_allow_html=True)
+    st.markdown("<span class='badge'>YUNO OS 0.5B Engine</span>", unsafe_allow_html=True)
     st.markdown("<span class='badge'>28 Layer Transformer</span>", unsafe_allow_html=True)
     st.markdown("<span class='badge'>151.6k Vocab Size</span>", unsafe_allow_html=True)
     st.markdown("<span class='badge'>40k Context Window</span>", unsafe_allow_html=True)

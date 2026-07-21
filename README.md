@@ -178,7 +178,7 @@ python scripts/generate_dataset.py
 python training/train_sft.py --config config/training_config.yaml --train datasets/train.jsonl --eval datasets/eval.jsonl
 
 # 3. Run Benchmark Evaluations
-python evaluation/run_evals.py --model Qwen/Qwen3-0.6B --n-samples 10 --benchmarks latency yuno_hinglish
+python evaluation/run_evals.py --model HcxUi/YUNO-OS-0.5B --n-samples 10 --benchmarks latency yuno_hinglish
 ```
 
 ---
