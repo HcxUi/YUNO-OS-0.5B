@@ -16,6 +16,9 @@ from .config import YunoConfig
 from .model import YunoForCausalLM
 from .tokenizer import YunoTokenizer
 from .generation import YunoGenerator
+from .memory import YunoMemory
+from .tools import YunoToolRegistry
+from .planner import YunoPlanner
 
 __version__ = "0.1.0"
 __author__ = "YUNO-LLM Team"
@@ -25,4 +28,7 @@ __all__ = [
     "YunoForCausalLM",
     "YunoTokenizer",
     "YunoGenerator",
+    "YunoMemory",
+    "YunoToolRegistry",
+    "YunoPlanner",
 ]

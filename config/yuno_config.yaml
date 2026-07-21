@@ -79,3 +79,25 @@ logging:
   log_file: "logs/yuno_llm.log"
   log_model_info: true
   log_generation: false  # Set true to log every generation (verbose)
+
+# ------------------------------------------------------------
+# Personal AI Operating System Configurations
+# ------------------------------------------------------------
+language:
+  default_mode: "hinglish"    # hinglish | english | hindi | mixed
+  allow_switching: true
+  primary_locale: "en-IN"
+
+memory:
+  enabled: true
+  long_term_file: "datasets/long_term_memory.json"
+  project_file: "datasets/project_memory.json"
+  max_short_term_turns: 15
+  auto_save_interval_turns: 5
+
+tools:
+  enabled: true
+  sandbox_dir: "workspace"
+  auto_approve_reads: true    # Files reads are allowed automatically
+  require_permission: true    # Writes and command executions require HITL console verification
+

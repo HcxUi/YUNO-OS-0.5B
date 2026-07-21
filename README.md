@@ -1,19 +1,58 @@
-# YUNO-LLM
+# YUNO-LLM Vision (Personal AI OS)
 
-> A research-grade, fully understood, open-source large language model — built and owned from the ground up.
+> A personal AI operating system whose core is YUNO-LLM, designed to communicate naturally in Hinglish, reason through complex tasks, use tools, remember important information, and act only with the user's permission.
 
 ---
 
-## Mission
+## Architecture Design
 
-YUNO-LLM is not a wrapper. It is a research project to:
+```
+                 USER
+                   │
+          Voice / Text / Image
+                   │
+                   ▼
+             YUNO Interface
+                   │
+                   ▼
+         YUNO Reasoning Engine
+                   │
+         ┌─────────┼─────────┐
+         │         │         │
+         ▼         ▼         ▼
+     YunoMemory YunoTools YunoPlanner
+         │         │         │
+         └─────────┼─────────┘
+                   │
+                   ▼
+               YUNO LLM
+```
 
-- Understand every component of a modern LLM (attention, normalization, embeddings, training)
-- Modify the architecture deliberately, not blindly
-- Build a training and evaluation pipeline we fully own
-- Release versioned checkpoints with reproducible results
+The LLM is the brain, while memory, planning, and tools provide capabilities that neural network weights alone cannot.
 
-We start with the **Qwen3** architecture as our foundation and build YUNO-LLM on top of it.
+---
+
+## Core Capabilities
+
+### 1. Human-like Conversation
+- **Natural Hinglish & Language Switching:** Seamlessly switch between English, Hindi, and mixed Hinglish.
+- **Context & Emotion Aware:** Responses adjust to the conversational context and user state.
+- **Long-context retention:** Track conversational state across multiple turns.
+
+### 2. Advanced Reasoning & Planning
+- **Step-by-Step Planning:** Break down prompts and execute plans logically.
+- **Self-Checking:** Reflects on its answers before outputting.
+- **Uncertainty & Consistency:** Direct and honest; explicitly states when it does not know the answer.
+
+### 3. Memory Stack
+- **Short-Term Conversation Memory:** Retain current context.
+- **Long-Term Personal Memory:** Remember user facts (e.g., name, preferences) locally in a JSON database.
+- **Project Memory:** Tracks files, folders, and workspace code files.
+- **User-Controlled:** Fully managed; you can delete or update stored memories at any time.
+
+### 4. Safe Tool Execution (HITL)
+- **User Permission-First:** Actions affecting the local system or network (write, delete, execute, API calls) require explicit confirmation.
+- **Supported Tools:** File summarization, code generation, document search, and workflow automation.
 
 ---
 
@@ -22,128 +61,69 @@ We start with the **Qwen3** architecture as our foundation and build YUNO-LLM on
 ```
 YUNO-LLM/
 │
-├── docs/                    # Theory + architecture documentation
-│   ├── theory/              # Concept-by-concept LLM theory (11 documents)
-│   └── architecture/        # Layer-by-layer architecture analysis
+├── docs/                    # Theory, architecture & OS documentation
+│   ├── theory/              # Concept-by-concept LLM theory
+│   ├── architecture/        # OS & model layer-by-layer details
+│   └── YUNO_OS_Architecture.md
 │
-├── research/                # Papers, references, notes
-├── datasets/                # Training and evaluation datasets
-├── tokenizer/               # Tokenizer experiments and custom vocab
-│
-├── models/
-│   ├── base/                # Downloaded base model weights
-│   └── yuno/                # YUNO-LLM checkpoints
-│
-├── training/                # Training scripts (SFT, LoRA, full fine-tune)
-├── inference/               # Generation scripts and API server
-├── evaluation/              # Evaluation suite (reasoning, coding, math)
-│
-├── checkpoints/             # Training checkpoints
-├── experiments/             # Experiment logs (JSON per run)
-│
-├── scripts/                 # Utility scripts (download, verify, convert)
-├── tools/                   # Helper utilities
-├── notebooks/               # Jupyter notebooks for exploration
-├── tests/                   # Unit and integration tests
+├── datasets/                # Local data & memory JSONs
+├── config/
+│   ├── yuno_config.yaml     # OS & model configurations
+│   └── training_config.yaml # LoRA hyperparameters
 │
 ├── src/
-│   └── yuno_llm/            # YUNO-LLM Python package
-│       ├── config.py        # YunoConfig
-│       ├── model.py         # YunoForCausalLM
-│       ├── tokenizer.py     # YunoTokenizer
-│       ├── generation.py    # Custom generation logic
-│       └── identity.py      # System identity
+│   └── yuno_llm/            # YUNO-LLM OS Core package
+│       ├── config.py        # Config Loader
+│       ├── identity.py      # Hinglish & HITL prompt identity
+│       ├── model.py         # CausalLM base loader
+│       ├── tokenizer.py     # Special token handler
+│       ├── memory.py        # Short, Long & Project memory stores
+│       ├── tools.py         # HITL Tool registry and SafeExecutor
+│       ├── planner.py       # Plan parsing & reasoning execution
+│       └── generation.py    # Main generator orchestrator
 │
-├── config/
-│   ├── yuno_config.yaml     # Master project configuration
-│   └── training_config.yaml # Training hyperparameters
-│
-├── requirements.txt
-├── .gitignore
-└── README.md
+└── inference/
+    └── generate.py          # Interactive chat REPL
 ```
 
 ---
 
 ## Setup
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/yourname/YUNO-LLM.git
-cd YUNO-LLM
-```
-
-### 2. Create Python environment
+### 1. Create Python environment
 ```bash
 python -m venv .venv
 .venv\Scripts\activate        # Windows
 source .venv/bin/activate     # Linux/macOS
 ```
 
-### 3. Install dependencies
+### 2. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Download the base model
+### 3. Download base weights & verify
 ```bash
 python scripts/download_model.py
+python scripts/verify_model.py --local models/base/Qwen--Qwen3-0.6B
 ```
 
-### 5. Verify the installation
+### 4. Start YUNO CLI OS
 ```bash
-python scripts/verify_model.py
+python inference/generate.py --model models/base/Qwen--Qwen3-0.6B
 ```
 
 ---
 
-## Development Roadmap
+## OS Philosophy & Control
 
-| Phase | Status | Goal |
-|-------|--------|------|
-| Phase 0 | ✅ | Environment setup |
-| Phase 1 | 🔄 | LLM theory documentation |
-| Phase 2 | ⬜ | Base model download and verification |
-| Phase 3 | ⬜ | Architecture analysis |
-| Phase 4 | ⬜ | YUNO-LLM source package |
-| Phase 5 | ⬜ | Fine-tuning pipeline (LoRA) |
-| Phase 6 | ⬜ | Inference server |
-| Phase 7 | ⬜ | Evaluation suite |
-| Phase 8 | ⬜ | Release v1.0 |
+> **User Control Principle:** YUNO is powerful but completely controlled by the user. It explains what it is about to do, requests approval for state-modifying actions, and lets you revoke permissions at any point.
 
 ---
 
-## Versions
+## Roadmap
 
-| Version | Description |
-|---------|-------------|
-| v0.1 | Architecture understood, model loads |
-| v0.2 | First LoRA fine-tune on custom dataset |
-| v0.5 | Evaluation suite, inference server |
-| v1.0 | Full release with public weights |
-
----
-
-## Base Model
-
-YUNO-LLM is built on top of **Qwen3** (Alibaba Cloud).
-
-- Model card: https://huggingface.co/Qwen/Qwen3-0.6B
-- License: Apache 2.0
-
----
-
-## Philosophy
-
-> "We don't use components we don't understand. We understand first, then we modify."
-
-Every change to YUNO-LLM must be:
-1. Theoretically motivated
-2. Documented in `docs/architecture/`
-3. Measured against the evaluation suite
-
----
-
-## License
-
-Apache 2.0 — See `LICENSE` file.
+- **Version 0.1:** Open-source foundation, Custom OS config and system identity prompt.
+- **Version 0.5:** Fine-tune for Hinglish/instruction following, introduce advanced local memory.
+- **Version 1.0:** Voice/Vision, Desktop integrations, Tool-use local APIs.
+- **Version 2.0:** Multi-agent collaboration, planning & reflection OS.
