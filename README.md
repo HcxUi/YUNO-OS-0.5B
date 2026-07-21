@@ -2,12 +2,11 @@
 
 > **Personal AI Operating System — Private, Local, Offline-First, Natural Hinglish**
 
-[![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](https://github.com/HcxUi/YUNO-OS-0.5B-Instruct-)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
-[![Developer](https://img.shields.io/badge/developer-@hcxui-purple.svg)](https://github.com/HcxUi)
+[![Model Card](https://img.shields.io/badge/Model%20Card-YUNO--OS--0.5B--Instruct-brightgreen.svg)](MODEL_CARD.md)
+[![Release Notes](https://img.shields.io/badge/Release%20Notes-v0.5.0-orange.svg)](RELEASE_NOTES.md)
 
 ---
+
 
 ## 🌟 Overview & Mission
 
