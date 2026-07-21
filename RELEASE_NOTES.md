@@ -1,13 +1,13 @@
-# YUNO OS 0.5B Instruct — v0.5.0 Release Notes
+# YUNO OS 0.5B — v0.5.0 Release Notes
 
-> **Official Release Notes for YUNO-OS-0.5B-Instruct v0.5.0**  
+> **Official Release Notes for YUNO-OS-0.5B v0.5.0**  
 > **Developer:** [@hcxui](https://github.com/HcxUi) | **Release Date:** July 2026
 
 ---
 
 ## 🎉 What's New in v0.5.0
 
-`YUNO-OS-0.5B-Instruct` v0.5.0 marks the full system release of the personal, local, offline-first AI operating system. Built for seamless desktop automation, multi-modal interaction, long-term personal memory, and trilingual conversation in **English**, **Hindi**, and **Hinglish**.
+`YUNO-OS-0.5B` v0.5.0 marks the full system release of the personal, local, offline-first AI operating system. Built for seamless desktop automation, multi-modal interaction, long-term personal memory, and trilingual conversation in **English**, **Hindi**, and **Hinglish**.
 
 ---
 
@@ -21,6 +21,7 @@
 
 ### 2. Streamlit Glassmorphism Web UI & Interactive CLI
 - Modern glassmorphism web application (`YUNO_OS_Release_Package/app.py`).
+- Direct local Web Playground URL: `http://localhost:8502`.
 - One-click launcher scripts (`run_web_ui.bat` & `run_cli.bat`).
 - Real-time response streaming, visual tool status badges, system prompt customization, and dark theme UI.
 
@@ -43,8 +44,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/HcxUi/YUNO-OS-0.5B-Instruct-.git
-cd YUNO-OS-0.5B-Instruct-
+git clone https://github.com/HcxUi/YUNO-OS-0.5B.git
+cd YUNO-OS-0.5B
 
 # Install requirements
 pip install -r requirements.txt

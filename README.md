@@ -1,16 +1,20 @@
-# YUNO-OS-0.5B-Instruct-
+# YUNO-OS-0.5B
 
-> **Personal AI Operating System — Private, Local, Offline-First, Natural Hinglish**
+> **Personal AI Operating System — Private, Local, Offline-First, Natural Hinglish Native**
 
-[![Model Card](https://img.shields.io/badge/Model%20Card-YUNO--OS--0.5B--Instruct-brightgreen.svg)](MODEL_CARD.md)
+[![Model Card](https://img.shields.io/badge/Model%20Card-YUNO--OS--0.5B-brightgreen.svg)](MODEL_CARD.md)
 [![Release Notes](https://img.shields.io/badge/Release%20Notes-v0.5.0-orange.svg)](RELEASE_NOTES.md)
+[![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](https://github.com/HcxUi/YUNO-OS-0.5B)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
+[![Developer](https://img.shields.io/badge/developer-@hcxui-purple.svg)](https://github.com/HcxUi)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Streamlit%20Web%20UI-ff4b4b.svg)](#-live-web-playground--interactive-demo)
 
 ---
 
-
 ## 🌟 Overview & Mission
 
-**YUNO-OS-0.5B-Instruct** is an intelligent, offline-first personal AI operating system designed for desktop automation, multi-modal reasoning (Vision & Voice), high-performance computing, and natural conversation in **English**, **Hindi**, and **Hinglish**.
+**YUNO-OS-0.5B** is an intelligent, offline-first personal AI operating system designed for desktop automation, multi-modal reasoning (Vision & Voice), high-performance computing, and natural conversation in **English**, **Hindi**, and **Hinglish**.
 
 Developed from the ground up by **[@hcxui](https://github.com/HcxUi)**, YUNO OS operates completely locally on personal workstation hardware while ensuring complete user privacy and total action safety through a 3-tier Human-In-The-Loop (HITL) permission architecture.
 
@@ -22,8 +26,30 @@ Developed from the ground up by **[@hcxui](https://github.com/HcxUi)**, YUNO OS 
 > **"मुझे @hcxui द्वारा बनाया और विकसित किया गया है। 😊"**
 
 - **Developer & Architect:** [@hcxui](https://github.com/HcxUi)
-- **Model Architecture:** `YunoForCausalLM` (`YUNO-OS-0.5B-Instruct`)
+- **Model Architecture:** `YunoForCausalLM` (`YUNO-OS-0.5B`)
 - **Package Container Format:** `YUNO_LLM_PROPRIETARY_V1`
+
+---
+
+## 🌐 Live Web Playground & Interactive Demo
+
+Test `YUNO-OS-0.5B` interactively directly through the built-in Streamlit Glassmorphism Web Interface or CLI Assistant:
+
+### 1. Launch Streamlit Web Application (Direct Local Web UI)
+```bash
+python -m streamlit run YUNO_OS_Release_Package/app.py
+```
+> 📍 **Local Playground URL:** [http://localhost:8502](http://localhost:8502)
+
+### 2. Launch Interactive CLI AI Assistant
+```bash
+python YUNO_OS_Release_Package/cli.py
+```
+
+### 3. Quick Test & Reasoning Workflow Script
+```bash
+python scripts/demo_os_cli.py
+```
 
 ---
 
@@ -32,7 +58,7 @@ Developed from the ground up by **[@hcxui](https://github.com/HcxUi)**, YUNO OS 
 1. **🔒 Privacy-First & Offline-First**
    - Operates 100% locally on your workstation.
    - Conversation history, facts, and episodic embeddings never leave your device.
-2. **🛡️ Anti-Tamper & Security Container**
+2. **🛡️ 1-Piece Compiled Anti-Tamper Container (`.yuno`)**
    - Cryptographic **SHA-256 weight hash signature** embedded in binary metadata to prevent unauthorized modification.
    - **XOR 0x77 Anti-Decompile Cipher:** Model byte-stream protected against reverse engineering, editing, or unauthorized re-mastering.
 3. **🤝 Human-In-The-Loop (HITL) Tool Safety**
@@ -62,21 +88,6 @@ YUNO_OS_Release_Package/
 ├── run_cli.bat                  # One-click Launcher for Interactive CLI
 ├── extract_and_run.py           # Integrity unpacker & decryptor script
 └── pack_yuno_bin.py             # Proprietary secure pack & signature utility
-```
-
-### 🚀 Launch Options
-
-#### Option 1: Web Interface (Streamlit Glassmorphism UI)
-Run the script or double-click `run_web_ui.bat`:
-```bash
-python -m streamlit run YUNO_OS_Release_Package/app.py
-```
-*Access Web UI at `http://localhost:8502`*
-
-#### Option 2: Interactive CLI Terminal
-Run the script or double-click `run_cli.bat`:
-```bash
-python YUNO_OS_Release_Package/cli.py
 ```
 
 ---
@@ -135,8 +146,8 @@ python YUNO_OS_Release_Package/cli.py
 ### 1. Installation
 
 ```bash
-git clone https://github.com/HcxUi/YUNO-OS-0.5B-Instruct-.git
-cd YUNO-OS-0.5B-Instruct-
+git clone https://github.com/HcxUi/YUNO-OS-0.5B.git
+cd YUNO-OS-0.5B
 pip install -r requirements.txt
 ```
 
@@ -174,4 +185,4 @@ python evaluation/run_evals.py --model Qwen/Qwen3-0.6B --n-samples 10 --benchmar
 
 ## 📄 License
 
-Distributed under the **MIT License**. Created by **[@hcxui](https://github.com/HcxUi)**.
+Distributed under the **MIT License**. Created & Developed by **[@hcxui](https://github.com/HcxUi)**.

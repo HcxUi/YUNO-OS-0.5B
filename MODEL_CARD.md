@@ -1,17 +1,18 @@
-# Model Card: YUNO-OS-0.5B-Instruct
+# Model Card: YUNO-OS-0.5B
 
-> **Official Model Card for YUNO-OS-0.5B-Instruct — Next-Generation Personal AI Operating System**
+> **Official Model Card for YUNO-OS-0.5B — Next-Generation Personal AI Operating System**
 
-[![Model Architecture](https://img.shields.io/badge/Architecture-YunoForCausalLM-blue.svg)](https://github.com/HcxUi/YUNO-OS-0.5B-Instruct-)
+[![Model Architecture](https://img.shields.io/badge/Architecture-YunoForCausalLM-blue.svg)](https://github.com/HcxUi/YUNO-OS-0.5B)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Developer](https://img.shields.io/badge/Developer-@hcxui-purple.svg)](https://github.com/HcxUi)
 [![Language](https://img.shields.io/badge/Language-Hinglish%20%7C%20English%20%7C%20Hindi-orange.svg)](#language-support)
+[![Interactive Demo](https://img.shields.io/badge/Interactive%20Demo-Streamlit%20Web%20UI-ff4b4b.svg)](#-interactive-demo--web-playground)
 
 ---
 
 ## 📌 Model Overview
 
-- **Model Name:** `YUNO-OS-0.5B-Instruct`
+- **Model Name:** `YUNO-OS-0.5B`
 - **Developer & Creator:** [@hcxui](https://github.com/HcxUi)
 - **Model Type:** Causal Language Model & Personal AI OS Orchestrator
 - **Base Architecture:** Standalone CausalLM (28 Layers, 16 Attention Heads, 1024 Hidden Dimension)
@@ -31,6 +32,18 @@ For all system queries asking about the creator or origin of YUNO OS:
 "I was created and developed by @hcxui."
 "मुझे @hcxui द्वारा बनाया और विकसित किया गया है। 😊"
 ```
+
+---
+
+## 🌐 Interactive Demo & Web Playground
+
+Test `YUNO-OS-0.5B` interactively with real-time intent reasoning and tool execution:
+
+```bash
+# Launch Streamlit Glassmorphism Web App
+python -m streamlit run YUNO_OS_Release_Package/app.py
+```
+> Access Local Web Playground at: `http://localhost:8502`
 
 ---
 
@@ -63,7 +76,7 @@ YUNO OS releases in a standalone 1-piece compiled package designed for single-fi
 
 ## 🛠️ System Capabilities & 15 HITL Tools
 
-`YUNO-OS-0.5B-Instruct` acts as an agentic AI operating system with 15 built-in tools across 3 Human-In-The-Loop (HITL) security tiers:
+`YUNO-OS-0.5B` acts as an agentic AI operating system with 15 built-in tools across 3 Human-In-The-Loop (HITL) security tiers:
 
 | Tier | Tools Included | Behavior |
 |---|---|---|
@@ -75,7 +88,7 @@ YUNO OS releases in a standalone 1-piece compiled package designed for single-fi
 
 ## 📊 Evaluation & Benchmark Results
 
-`YUNO-OS-0.5B-Instruct` was evaluated on standard benchmarks and custom Hinglish OS task completion suites (`evaluation/run_evals.py`):
+`YUNO-OS-0.5B` was evaluated on standard benchmarks and custom Hinglish OS task completion suites (`evaluation/run_evals.py`):
 
 | Benchmark Metric | Score / Result |
 |---|---|
@@ -120,26 +133,18 @@ python YUNO_OS_Release_Package/cli.py
 
 ---
 
-## ⚠️ Limitations & Ethical Considerations
-
-- **Workstation Focus:** Designed primarily for desktop automation, personal note management, coding assistance, and system tasks.
-- **HITL Verification:** Always verify file modification commands (`write_file`, `run_script`) before authorizing execution.
-- **Resource Requirements:** Recommended minimum 4 GB RAM for FP16 execution, 2 GB RAM for INT8 quantized execution.
-
----
-
 ## 📄 Citation & License
 
-If you use `YUNO-OS-0.5B-Instruct` in your research or project, please cite:
+If you use `YUNO-OS-0.5B` in your research or project, please cite:
 
 ```bibtex
 @misc{yuno_os_2026,
   author = {@hcxui},
-  title = {YUNO-OS-0.5B-Instruct: Personal Offline-First AI Operating System},
+  title = {YUNO-OS-0.5B: Personal Offline-First AI Operating System},
   year = {2026},
   publisher = {GitHub},
   journal = {GitHub Repository},
-  howpublished = {\url{https://github.com/HcxUi/YUNO-OS-0.5B-Instruct-}}
+  howpublished = {\url{https://github.com/HcxUi/YUNO-OS-0.5B}}
 }
 ```
 
